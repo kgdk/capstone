@@ -131,3 +131,152 @@ class Main {
 		}
 
 }
+
+book.java
+
+public class Book {
+	private int id;
+	private String title;
+    private String author;
+    private String genre;
+    private boolean isCheckIn;
+    private static int nextId=0;
+
+	public Book(String title, String author, String genre) {
+		this.id = nextId;
+		this.title = title.toUpperCase();
+		this.author = author.toUpperCase();
+		this.genre = genre.toUpperCase();
+		isCheckIn = true;
+		nextId++;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
+    public String getGenre(){
+        return genre ;
+    }
+    
+    public void setGenre(String genre){
+        this.genre = genre;
+    }
+    
+    public boolean getCheckIn() {
+    	return isCheckIn;
+    }
+    public void setCheckOut() {
+    	isCheckIn = false;
+    }
+    public void setCheckIn() {
+    	isCheckIn = true;
+    }
+	
+	public String toString(){
+		return String.format("%-50s%-30s%-20s%-15s%-10s%n", title, author, genre, isCheckIn,id);
+	}
+
+}
+
+
+BookSystem.java
+
+import java.util.ArrayList;
+
+public class BookSystem {
+	private ArrayList<Book> books;
+
+  public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
+  public static final String TEXT_RESET = "\u001B[0m";
+	
+	public BookSystem() {
+		books = new ArrayList<Book>();
+	}
+	
+	public boolean addBook(Book b) {
+		boolean isBookExist = false;
+		for(Book arrBook:books) {
+			if(arrBook.getTitle().equalsIgnoreCase(b.getTitle()) && arrBook.getAuthor().equalsIgnoreCase(b.getAuthor())) {
+				isBookExist = true;
+				System.out.println(ANSI_CYAN_BACKGROUND + "The book is already exist in the library!" + TEXT_RESET);
+			}
+		}
+		if(!isBookExist) {
+			books.add(b);
+		}
+		return isBookExist;
+	}
+	
+	public void removeBook(String title) {
+		for(int i=0;i<books.size();i++) {
+			if(books.get(i).getTitle().equalsIgnoreCase(title)) {
+				books.remove(i);
+				System.out.println(ANSI_CYAN_BACKGROUND + "Removing book completed!!" + TEXT_RESET);
+        System.out.println();
+			}
+		}
+	}
+	
+	public Book searchBook(String name) {
+		for(Book arrBook:books) {
+			String title = arrBook.getTitle();
+			if(title.equalsIgnoreCase(name)) {
+				return arrBook;
+			}
+		}
+		return null;
+	}
+	
+	public String listBooks() {
+		String listBooks = "";
+		for(Book b:books) {
+			listBooks += b.toString();
+		}
+		return listBooks;
+	}
+	
+	public boolean checkInBook(String name) {
+		for(int i=0;i<books.size();i++) {
+			if(books.get(i).getTitle().equalsIgnoreCase(name)) {
+				  books.get(i).setCheckIn();
+				  return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean checkOutBook(String name) {
+		for(int i=0;i<books.size();i++) {
+			if(books.get(i).getTitle().equalsIgnoreCase(name)) {
+				if(books.get(i).getCheckIn()) {
+					books.get(i).setCheckOut();
+					System.out.println(ANSI_CYAN_BACKGROUND +"Checkout completed! Good Reading.." + TEXT_RESET);
+					return true;
+				}else {
+					System.out.println(ANSI_CYAN_BACKGROUND +"The book is already checked out" + TEXT_RESET);
+					return false;
+				}
+			}
+		}
+		System.out.println("No this book in the library..");
+		return false;
+	}
+
+}
